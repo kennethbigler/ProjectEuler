@@ -579,12 +579,16 @@ function dynNumGridPaths() {
 
 /* 2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
  * What is the sum of the digits of the number 2^1000? */
-function sumTwoHighPower() {
+function sumTwoHighPower(end) {
     "use strict";
     var i, j, result = 0,
         carry = 0,
-        end = 1000,
         exp = [1];
+    
+    // sanatize input
+    if (end === undefined) {
+        end = 1000;
+    }
     
     // iterate to exponent times
     for (i = 0; i < end; i += 1) {
