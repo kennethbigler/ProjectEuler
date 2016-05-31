@@ -529,11 +529,162 @@ function findLongestCSequence() {
 
 /* Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
  * How many such routes are there through a 20×20 grid? */
-function numGridPaths() {
+function findEnd(x, y, max, count) {
     "use strict";
-    var n = 2;
+    if (x === max && y === max) {
+        if (count % 1000000000 === 0) {
+            console.log(count);
+        }
+        return count + 1;
+    }
+    if (x < max) {
+        count = findEnd(x + 1, y, max, count);
+    }
+    if (y < max) {
+        count = findEnd(x, y + 1, max, count);
+    }
+    return count;
 }
 
+function numGridPaths() {
+    "use strict";
+    var n = 20;
+    return findEnd(0, 0, n, 0);
+}
+
+/* solution found online in python and translated
+ * 1. S[i][j] = 1                      if j = 0
+ * 2. S[i][j] = S[i][j-1] + S[i-1][j]  if 0 < j < i
+ * 3. S[i][j] = 2 * S[i][j-1]          if i = j     */
+function dynNumGridPaths() {
+    "use strict";
+    var i, j, result = [], n = 20;
+    
+    // 1. S[i][j] = 1  if j = 0
+    for (i = 0; i < n; i += 1) {
+        result[i] = 1;
+    }
+    
+    for (i = 1; i <= n; i += 1) {
+        // 2. S[i][j] = S[i][j-1] + S[i-1][j]  if 0 < j < i
+        for (j = 1; j < i; j += 1) {
+            result[j] = result[j - 1] + result[j];
+        }
+        // 3. S[i][j] = 2 * S[i][j-1]  if i = j
+        result[i] = 2 * result[i - 1];
+    }
+    console.log(result);
+    return result[n];
+}
+
+/* 2^15 = 32768 and the sum of its digits is 3 + 2 + 7 + 6 + 8 = 26.
+ * What is the sum of the digits of the number 2^1000? */
+function sumTwoHighPower() {
+    "use strict";
+    var i, j, result = 0,
+        carry = 0,
+        end = 1000,
+        exp = [1];
+    
+    // iterate to exponent times
+    for (i = 0; i < end; i += 1) {
+        // iterate through array multiplying by 2
+        for (j = 0; j < exp.length; j += 1) {
+            exp[j] *= 2;
+            exp[j] += carry;
+            carry = 0;
+            if (exp[j] >= 10) {
+                exp[j] %= 10;
+                carry = 1;
+                if (exp[j + 1] === undefined) {
+                    exp[j + 1] = 1;
+                    carry = 0;
+                    break;
+                }
+            }
+        }
+        //console.log(exp);
+    }
+    
+    for (i = 0; i < exp.length; i += 1) {
+        result += exp[i];
+    }
+    
+    return result;
+}
+
+/* If the numbers 1 to 5 are written out in words: one, two, three, four, five, then there are 3 + 3 + 5 + 4 + 4 = 19 letters used in total.
+ * If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used?
+ *
+ * NOTE: Do not count spaces or hyphens. For example, 342 (three hundred and forty-two) contains 23 letters and 115 (one hundred and fifteen) contains 20 letters.
+ * The use of "and" when writing out numbers is in compliance with British usage. */
+function translateSum() {
+    "use strict";
+    // 21-30, 27-90, 28 00
+    var num, i, j, end = 1000,
+        result = 0,
+        translate = [4, 3, 3, 5, 4, 4, 3, 5, 5, 4, 3, 6, 6, 8, 8, 7, 7, 9, 8, 8, 6, 6, 5, 5, 5, 7, 6, 6];
+    // iterate through all numbers <= 1000
+    for (i = 1; i <= end; i += 1) {
+        // thousands case
+        if (i === 1000) {
+            result += 11;
+            break;
+        }
+        // hundreds case
+        if (i >= 100) {
+            num = i.toString();
+            num = parseInt(num[0], 10);
+            // number + hundred
+            result += (translate[num] + 7);
+            // check for "and"
+            if (i % 100 !== 0) {
+                result += 3;
+            }
+        }
+        j = i % 100;
+        if (j >= 20) {
+            num = j.toString();
+            num = parseInt(num[0], 10);
+            result += translate[num + 18];
+            j = j % 10;
+        }
+        if (j > 0) {
+            result += translate[j];
+        }
+        //console.log(result);
+    }
+    return result;
+}
+
+/*By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.
+
+3
+7 4
+2 4 6
+8 5 9 3
+
+That is, 3 + 7 + 4 + 9 = 23.
+
+Find the maximum total from top to bottom of the triangle below:
+
+75
+95 64
+17 47 82
+18 35 87 10
+20 04 82 47 65
+19 01 23 75 03 34
+88 02 77 73 07 63 67
+99 65 04 28 06 16 70 92
+41 41 26 56 83 40 80 70 33
+41 48 72 33 47 32 37 16 94 29
+53 71 44 65 25 43 91 52 97 51 14
+70 11 33 28 77 73 17 78 39 68 17 57
+91 71 52 38 17 14 91 43 58 50 27 29 48
+63 66 04 68 89 53 67 30 73 16 69 87 40 31
+04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
+
+NOTE: As there are only 16384 routes, it is possible to solve this problem by trying every route. However, Problem 67, is the same challenge with a triangle containing one-hundred rows; it cannot be solved by brute force, and requires a clever method! ;o) */
 
 
 
