@@ -700,6 +700,56 @@ function longestPath() {
  *  A leap year occurs on any year evenly divisible by 4, but not on a century unless it is divisible by 400.
  * How many Sundays fell on the first of the month during the twentieth century (1 Jan 1901 to 31 Dec 2000)? */
 // NOTES: 364 Days in 52 weeks, 365 in year, 366 in leap year
+function Sundaysin20thCentury(end) {
+    "use strict";
+    var i, j, result = 0, months = [31 % 7, 28 % 7, 31 % 7, 30 % 7, 31 % 7, 30 % 7, 31 % 7, 31 % 7, 30 % 7, 31 % 7, 30 % 7, 31 % 7],
+        // mondays are 0, sundays are 6
+        // 1900 starts at 0, so 1901 is 0 + 29 % 7 = 1
+        start = 1;
+    
+    // sanatize input
+    end = parseInt(end, 10);
+    if (isNaN(end)) {
+        end = 2000;
+    }
+    
+    for (i = 1901; i <= end; i += 1) {
+        for (j = 0; j < months.length; j += 1) {
+            if (start === 6) {
+                result += 1;
+            }
+            start = (start + months[j]) % 7;
+            if (j === 1 && i % 4 === 0 && (i % 100 !== 0 || i % 400 === 0)) {
+                start = (start + 1) % 7;
+            }
+        }
+    }
+    
+    return result;
+}
+
+/* n! means n × (n − 1) × ... × 3 × 2 × 1
+ * For example, 10! = 10 × 9 × ... × 3 × 2 × 1 = 3628800,
+ * and the sum of the digits in the number 10! is 3 + 6 + 2 + 8 + 8 + 0 + 0 = 27.
+ * Find the sum of the digits in the number 100! */
+function factorialResultSum() {
+    "use strict";
+    var i, j, b, t1, t2, result;
+    
+    result = [0, 0, 1];
+    for (i = 99; i > 0; i -= 1) {
+        b = [];
+        if (i >= 10) {
+            b.push(Math.floor(i / 10));
+        }
+        b.push(i % 10);
+        console.log(b);
+    }
+}
+
+
+
+
 function x(end) {
     "use strict";
     var i;
@@ -713,19 +763,6 @@ function x(end) {
 
 
 
-function x(end) {
-    "use strict";
-    var i;
-    
-    // sanatize input
-    end = parseInt(end, 10);
-    if (isNaN(end)) {
-        end = 1000;
-    }
-}
-
-
-
 
 function x(end) {
     "use strict";
@@ -753,7 +790,13 @@ function x(end) {
 }
 
 
-
-
-
-
+function x(end) {
+    "use strict";
+    var i;
+    
+    // sanatize input
+    end = parseInt(end, 10);
+    if (isNaN(end)) {
+        end = 1000;
+    }
+}
