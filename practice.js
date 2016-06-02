@@ -404,8 +404,8 @@ function firstTenSum() {
     "use strict";
     var i, sum = 0,
         numbers = [
-            37107287533902102798797998220837590246510135740250, 46376937677490009712648124896970078050417018260538, 74324986199524741059474233309513058123726617309629, 91942213363574161572522430563301811072406154908250,
-            23067588207539346171171980310421047513778063246676, 89261670696623633820136378418383684178734361726757, 28112879812849979408065481931592621691275889832738, 44274228917432520321923589422876796487670272189318,
+            37107287533902102798797998220837590246510135740250, 46376937677490009712648124896970078050417018260538, 74324986199524741059474233309513058123726617309629,
+            91942213363574161572522430563301811072406154908250, 23067588207539346171171980310421047513778063246676, 89261670696623633820136378418383684178734361726757, 28112879812849979408065481931592621691275889832738, 44274228917432520321923589422876796487670272189318,
             47451445736001306439091167216856844588711603153276, 70386486105843025439939619828917593665686757934951, 62176457141856560629502157223196586755079324193331, 64906352462741904929101432445813822663347944758178,
             92575867718337217661963751590579239728245598838407, 58203565325359399008402633568948830189458628227828, 80181199384826282014278194139940567587151170094390, 35398664372827112653829987240784473053190104293586,
             86515506006295864861532075273371959191420517255829, 71693888707715466499115593487603532921714970056938, 54370070576826684624621495650076471787294438377604, 53282654108756828443191190634694037855217779295145,
@@ -734,30 +734,106 @@ function Sundaysin20thCentury(end) {
  * Find the sum of the digits in the number 100! */
 function factorialResultSum() {
     "use strict";
-    var i, j, k, b, t1, t2, t, c, result;
+    var i, j, k, b, c, result = 0, product, t = [];
     
-    result = [0, 0, 1];
+    product = [0, 0, 1];
     for (i = 99; i > 0; i -= 1) {
         b = [];
-        t1 = [];
-        t2 = [0];
-        c = [0];
+        t[0] = [];
+        t[1] = [0];
+        // set current value
         b.push(i % 10);
         if (i >= 10) {
             b.push(Math.floor(i / 10));
         }
+        // iterate through and multiply to get 2 temps
+        
         for (j = 0; j < b.length; j += 1) {
-            for (k = 0; k < result.length; k += 1) {
-                t = b[j] * result[k];
-                c.push(Math.floor(t / 10));
-                t1.push(t % 10);
+            c = 0;
+            for (k = 0; k < product.length; k += 1) {
+                t[2] = b[j] * product[k];
+                t[j].push((t[2] + c) % 10);
+                c = Math.floor((t[2] + c) / 10);
+            }
+            if (c !== 0) {
+                t[j].push(c);
             }
         }
+        // iterate though temps and add to get product
+        c = 0;
+        product = [];
+        k = (t[0].length > t[1].length) ? t[0].length : t[1].length;
+        for (j = 0; j < k; j += 1) {
+            if (!t[0][j]) {
+                t[0][j] = 0;
+            }
+            if (!t[1][j]) {
+                t[1][j] = 0;
+            }
+            product.push((t[0][j] + t[1][j] + c) % 10);
+            c = Math.floor((t[0][j] + t[1][j] + c) / 10);
+        }
+        if (c !== 0) {
+            product.push(c);
+        }
+        //console.log(product);
     }
+    // find the sum of values in product array
+    for (i = 0; i < product.length; i += 1) {
+        result += product[i];
+    }
+    return result;
 }
 
+/* Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
+ * If d(a) = b and d(b) = a, where a != b, then a and b are an amicable pair and each of a and b are called amicable numbers.
+ * For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284.
+ * The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
+ * Evaluate the sum of all the amicable numbers under 10000.*/
+function findDivisors(n) {
+    "use strict";
+    var i, result = [1];
+    for (i = 2; i <= Math.sqrt(n); i += 1) {
+        if (i === Math.sqrt(n)) {
+            result.push(i);
+        } else if (n % i === 0) {
+            result.push(i);
+            result.push(n / i);
+        }
+    }
+    return result;
+}
 
+function amicableNumbers() {
+    "use strict";
+    var i, j, d, result = 0, aN1, aN2, aN = [];
+    
+    for (i = 0; i < 10000; i += 1) {
+        d = findDivisors(i);
+        aN1 = 0;
+        for (j = 0; j < d.length; j += 1) {
+            aN1 += d[j];
+        }
+        //console.log(aN1);
+        d = findDivisors(aN1);
+        aN2 = 0;
+        for (j = 0; j < d.length; j += 1) {
+            aN2 += d[j];
+        }
+        //console.log(aN2);
+        if (aN.indexOf(aN2) === -1 && aN1 !== aN2 && aN2 === i) {
+            aN.push(aN1);
+            aN.push(aN2);
+        }
+    }
+    // console.log(aN);
+    for (i = 0; i < aN.length; i += 1) {
+        result += aN[i];
+    }
+    return result;
+}
 
+//------------
 
 function x(end) {
     "use strict";
