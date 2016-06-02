@@ -734,16 +734,25 @@ function Sundaysin20thCentury(end) {
  * Find the sum of the digits in the number 100! */
 function factorialResultSum() {
     "use strict";
-    var i, j, b, t1, t2, result;
+    var i, j, k, b, t1, t2, t, c, result;
     
     result = [0, 0, 1];
     for (i = 99; i > 0; i -= 1) {
         b = [];
+        t1 = [];
+        t2 = [0];
+        c = [0];
+        b.push(i % 10);
         if (i >= 10) {
             b.push(Math.floor(i / 10));
         }
-        b.push(i % 10);
-        console.log(b);
+        for (j = 0; j < b.length; j += 1) {
+            for (k = 0; k < result.length; k += 1) {
+                t = b[j] * result[k];
+                c.push(Math.floor(t / 10));
+                t1.push(t % 10);
+            }
+        }
     }
 }
 
