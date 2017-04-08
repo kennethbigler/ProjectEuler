@@ -1291,13 +1291,48 @@ function sumOfFifthPowerSums() {
  * It is possible to make £2 in the following way:
  *      1×£1 + 1×50p + 2×20p + 1×5p + 1×2p + 3×1p
  * How many different ways can £2 be made using any number of coins? */
-function x(end) {
+
+/* I want something along the lines of
+ * if 200 -> 100, 100
+ * if 100 -> 50, 50
+ * if  50 -> 20. 20, 10
+ * if  20 -> 10, 10
+ * if  10 -> 5, 5
+ * if   5 -> 2, 2, 1
+ * if   2 -> 1, 1
+ * if   1 -> end
+*/
+function coinPossibilities(end) {
     "use strict";
-    var i;
+
+    var ways = 0, a, b, c, d, e, f, g;
     
     // sanatize input
     end = parseInt(end, 10);
     if (isNaN(end)) {
-        end = 1000;
+        end = 200;
     }
+ 
+    for (a = end; a >= 0; a -= 200) {
+        for (b = a; b >= 0; b -= 100) {
+            for (c = b; c >= 0; c -= 50) {
+                for (d = c; d >= 0; d -= 20) {
+                    for (e = d; e >= 0; e -= 10) {
+                        for (f = e; f >= 0; f -= 5) {
+                            for (g = f; g >= 0; g -= 2) {
+                                ways += 1;
+                                if (ways % 10000 === 0) {
+                                    console.log(ways);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ways;
 }
+
+// sorted array of ints, return array w/o duplicates
+11123345
